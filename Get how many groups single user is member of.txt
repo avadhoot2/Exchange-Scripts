@@ -1,4 +1,0 @@
-#Run the below in a PS that has exchangeonlinemanagement and Microsoft.Graph module loaded:
-#You can alter the $Users by importing the list of users from a csv and also can make additional moidications within the script i.e. to filter for MailUniversalSecurityGroup or MailUniversalDistributionGroup, but ultimately you can filter GroupMailbox-es out in the result excel as well.
-
-
