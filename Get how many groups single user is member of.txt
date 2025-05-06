@@ -1,0 +1,21 @@
+#Run the below in a PS that has exchangeonlinemanagement and Microsoft.Graph module loaded:
+#You can alter the $Users by importing the list of users from a csv and also can make additional moidications within the script i.e. to filter for MailUniversalSecurityGroup or MailUniversalDistributionGroup, but ultimately you can filter GroupMailbox-es out in the result excel as well.
+
+$Users = "Test@AD_dalavi.com"
+ 
+$GroupMembership = @()
+foreach ($user in $Users){
+	$memberof = (Get-MgUserMemberOf -UserId $user).id
+	foreach ($group in $memberof){
+		if($QueryGroup = Get-Recipient $group -ErrorAction:SilentlyContinue){
+			$tempobject = New-Object psobject
+			$tempobject | Add-Member -Type noteproperty -name User -value $user
+			$tempobject | Add-Member -Type noteproperty -name DisplayName -value $QueryGroup.DisplayName
+			$tempobject | Add-Member -Type noteproperty -name PrimarySMTPAddress -value $QueryGroup.PrimarySMTPAddress
+			$tempobject | Add-Member -Type noteproperty -name RecipientTypeDetails -value $QueryGroup.RecipientTypeDetails
+			$GroupMembership += $tempobject 
+		}
+	}
+ 
+}
+$GroupMembership | Export-CSV -Path "DL_1.csv" -delimiter "`t" -NoTypeInformation
